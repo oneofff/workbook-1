@@ -1,5 +1,6 @@
 package com.pluralsight;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -12,48 +13,64 @@ public class Main {
         double hoursWorked = getHoursWorked();
         double payRate = getPayRate();
 
-        payRate = calculatePayRate(payRate, hoursWorked);
-
-        double pay = hoursWorked * payRate;
+        double pay = calculateGrossPay(payRate, hoursWorked);
 
         printGrossPay(name, pay);
+        scanner.close();
     }
 
     private static void printGrossPay(String name, double pay) {
         System.out.printf("Name: %s, Gross Pay: $%.2f%n", name, pay);
     }
 
-    private static double calculatePayRate(double payRate, double hoursWorked) {
-        payRate = hoursWorked > 40 ? payRate * 1.5 : payRate;
-        return payRate;
+    private static double calculateGrossPay(double payRate, double hoursWorked) {
+        double grossPay;
+        if (hoursWorked > 40) {
+            grossPay = (40 * payRate) + ((hoursWorked - 40) * payRate * 1.5);
+        } else {
+            grossPay = hoursWorked * payRate;
+        }
+        return grossPay;
+    }
+
+    private static String getName() {
+        String name;
+        while (true) {
+            System.out.println("Enter a name:");
+            name = scanner.nextLine().trim();
+            if (!name.isEmpty()) {
+                break;
+            } else {
+                System.out.println("Name cannot be empty.");
+            }
+        }
+        return name;
     }
 
     private static double getHoursWorked() {
         System.out.println("Enter hours worked:");
-        double hoursWorked = scanner.nextDouble();
-        scanner.nextLine(); // Consume the newline character
-        if (hoursWorked < 0) {
-            throw new IllegalArgumentException("Hours worked must be non-negative.");
-        }
-        return hoursWorked;
+        return getPositiveDouble();
     }
 
     private static double getPayRate() {
         System.out.println("Enter pay rate:");
-        double payRate = scanner.nextDouble();
-        scanner.nextLine(); // Consume the newline character
-        if (payRate < 0) {
-            throw new IllegalArgumentException("Pay rate must be non-negative.");
-        }
-        return payRate;
+        return getPositiveDouble();
     }
 
-    private static String getName() {
-        System.out.println("Enter a name:");
-        String name = scanner.nextLine();
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be empty.");
+    public static double getPositiveDouble() {
+        double value;
+        while (true) {
+            try {
+                value = scanner.nextDouble();
+                if (value <= 0) {
+                    System.out.println("Invalid input. Value should be greater than 0.");
+                    continue;
+                }
+                return value;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a numeric value greater than 0.");
+                scanner.nextLine();
+            }
         }
-        return name;
     }
 }
