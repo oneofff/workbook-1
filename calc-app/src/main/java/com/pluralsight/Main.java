@@ -21,9 +21,9 @@ public class Main {
             action = askAction();
 
             result = performAction(action, firstNumber, secondNumber);
-            System.out.println("The result is: " + result);
+            System.out.printf("The result is: %.5f%n", result);
             System.out.println("Would you like to perform another calculation? (Y/N)");
-            continueCalculation = scanner.nextLine().trim().trim();
+            continueCalculation = scanner.nextLine().trim();
         }
     }
 
